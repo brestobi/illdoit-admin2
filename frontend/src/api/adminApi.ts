@@ -21,9 +21,11 @@ export const adminApi = {
 
   // Users
   getUsers: (q?: string) => api.get(`/users${q ? `?q=${q}` : ''}`).then(r => r.data),
-  updateUserStatus: (id: string, data: { status: string; reason?: string }) =>
-    api.post(`/users/${id}/status`, data).then(r => r.data),
-
+  updateUserStatus: (id: string, data: { status: string, reason?: string }) => 
+    api.post(`/users/${id}/status`, data).then(res => res.data),
+  deleteService: (id: string) => api.delete(`/moderation/services/${id}`).then(res => res.data),
+  deleteJob: (id: string) => api.delete(`/moderation/jobs/${id}`).then(res => res.data),
+  };
   // Verifications
   getVerifications: () => api.get('/verifications').then(r => r.data),
   updateVerificationStatus: (id: string, data: { status: string; rejectionReason?: string }) =>
