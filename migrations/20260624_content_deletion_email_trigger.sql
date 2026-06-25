@@ -6,13 +6,19 @@
 
 CREATE OR REPLACE FUNCTION public.handle_content_deletion_email()
 RETURNS TRIGGER AS $$
+DECLARE
+  _secret TEXT;
 BEGIN
+  SELECT value INTO _secret FROM public.app_secrets WHERE key = 'webhook_secret';
+  IF _secret IS NULL THEN
+    RETURN OLD;
+  END IF;
   PERFORM
     net.http_post(
       url := 'https://bvnaffajgxxylatshlwc.supabase.co/functions/v1/send_content_deletion_email',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
-        'x-webhook-secret', current_setting('app.settings.webhook_secret')
+        'x-webhook-secret', _secret
       ),
       body := jsonb_build_object('record', jsonb_build_object(
         'id', OLD.id,

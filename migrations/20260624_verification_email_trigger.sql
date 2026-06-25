@@ -7,19 +7,24 @@
 -- 1. Function to trigger verification email
 CREATE OR REPLACE FUNCTION public.handle_verification_email()
 RETURNS TRIGGER AS $$
+DECLARE
+  _secret TEXT;
 BEGIN
   -- Trigger only when verification_status changes to verified or rejected
   IF (NEW.verification_status IN ('verified', 'rejected')
       AND (OLD.verification_status IS DISTINCT FROM NEW.verification_status)) THEN
-    PERFORM
-      net.http_post(
-        url := 'https://bvnaffajgxxylatshlwc.supabase.co/functions/v1/send_verification_email',
-        headers := jsonb_build_object(
-          'Content-Type', 'application/json',
-          'x-webhook-secret', current_setting('app.settings.webhook_secret')
-        ),
-        body := jsonb_build_object('record', row_to_json(NEW))
-      );
+    SELECT value INTO _secret FROM public.app_secrets WHERE key = 'webhook_secret';
+    IF _secret IS NOT NULL THEN
+      PERFORM
+        net.http_post(
+          url := 'https://bvnaffajgxxylatshlwc.supabase.co/functions/v1/send_verification_email',
+          headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'x-webhook-secret', _secret
+          ),
+          body := jsonb_build_object('record', row_to_json(NEW))
+        );
+    END IF;
   END IF;
   RETURN NEW;
 END;

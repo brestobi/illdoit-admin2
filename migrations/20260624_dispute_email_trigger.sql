@@ -5,17 +5,22 @@
 
 CREATE OR REPLACE FUNCTION public.handle_dispute_email()
 RETURNS TRIGGER AS $$
+DECLARE
+  _secret TEXT;
 BEGIN
   IF (NEW.status = 'resolved' AND (OLD.status IS DISTINCT FROM 'resolved')) THEN
-    PERFORM
-      net.http_post(
-        url := 'https://bvnaffajgxxylatshlwc.supabase.co/functions/v1/send_dispute_email',
-        headers := jsonb_build_object(
-          'Content-Type', 'application/json',
-          'x-webhook-secret', current_setting('app.settings.webhook_secret')
-        ),
-        body := jsonb_build_object('record', row_to_json(NEW))
-      );
+    SELECT value INTO _secret FROM public.app_secrets WHERE key = 'webhook_secret';
+    IF _secret IS NOT NULL THEN
+      PERFORM
+        net.http_post(
+          url := 'https://bvnaffajgxxylatshlwc.supabase.co/functions/v1/send_dispute_email',
+          headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'x-webhook-secret', _secret
+          ),
+          body := jsonb_build_object('record', row_to_json(NEW))
+        );
+    END IF;
   END IF;
   RETURN NEW;
 END;

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { supabaseAdmin } from '../utils/supabaseClient';
 import { AdminRequest } from '../middleware/adminAuth';
+import { logAdminAction } from '../utils/auditLogger';
 
 export const listServices = async (req: AdminRequest, res: Response) => {
   try {
@@ -14,7 +15,11 @@ export const listServices = async (req: AdminRequest, res: Response) => {
 
 export const deleteService = async (req: AdminRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
+    const adminId = req.adminUser?.id;
+    if (adminId) {
+      await logAdminAction(adminId, 'delete_service', 'services', id);
+    }
     const { error } = await supabaseAdmin.from('services').delete().eq('id', id);
     if (error) throw error;
     res.json({ message: 'Service deleted' });
@@ -35,7 +40,11 @@ export const listJobs = async (req: AdminRequest, res: Response) => {
 
 export const deleteJob = async (req: AdminRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
+    const adminId = req.adminUser?.id;
+    if (adminId) {
+      await logAdminAction(adminId, 'delete_job', 'jobs', id);
+    }
     const { error } = await supabaseAdmin.from('jobs').delete().eq('id', id);
     if (error) throw error;
     res.json({ message: 'Job deleted' });
