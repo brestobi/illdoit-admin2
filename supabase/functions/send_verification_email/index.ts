@@ -50,7 +50,7 @@ serve(async (req) => {
 
     const isVerified = verification_status === "verified";
     const subject = isVerified
-      ? "✅ Your identity has been verified on I'll Do It"
+      ? "✅ Your identity has been verified on IllDOIT SPACE"
       : "❌ Identity verification update — I'll Do It";
 
     const html = isVerified
@@ -64,7 +64,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #059669, #10b981); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">✅ Identity Verified</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -77,7 +77,7 @@ serve(async (req) => {
                 <li>Requesting withdrawals</li>
                 <li>Building trust with verified badge on your profile</li>
               </ul>
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">Keep hustling,<br><strong style="color: #059669;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">Keep hustling,<br><strong style="color: #059669;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -101,7 +101,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #dc2626, #ef4444); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">❌ Verification Update</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -112,7 +112,7 @@ serve(async (req) => {
                 ? `<p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 16px;"><strong>Reason:</strong> ${user.verification_rejection_reason}</p>`
                 : ""}
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">You can re-submit your verification with the correct documents from your profile settings.</p>
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions, please contact support.<br><br><strong style="color: #dc2626;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions, please contact support.<br><br><strong style="color: #dc2626;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -134,7 +134,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "I'll Do It <noreply@updates.illdoit.space>",
+        from: "IllDOIT SPACE <noreply@updates.illdoit.space>",
         to: [user.email],
         subject,
         html,

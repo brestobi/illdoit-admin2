@@ -51,8 +51,8 @@ serve(async (req) => {
     const isApproved = status === "processed";
     const formattedAmount = `R ${Number(amount || 0).toLocaleString()}`;
     const subject = isApproved
-      ? `💰 Withdrawal of ${formattedAmount} approved — I'll Do It`
-      : `❌ Withdrawal of ${formattedAmount} rejected — I'll Do It`;
+      ? `💰 Withdrawal of ${formattedAmount} approved — IllDOIT SPACE`
+      : `❌ Withdrawal of ${formattedAmount} rejected — IllDOIT SPACE`;
 
     const html = isApproved
       ? `<!DOCTYPE html>
@@ -65,7 +65,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #059669, #10b981); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">💰 Withdrawal Approved</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -73,7 +73,7 @@ serve(async (req) => {
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">Hi <strong>${user.display_name || "there"}</strong>,</p>
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">Your withdrawal request for <strong style="color: #059669; font-size: 20px;">${formattedAmount}</strong> has been <strong style="color: #059669;">approved</strong>.</p>
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">The funds are being processed and will be sent to your bank account. Depending on your bank, this may take 1–3 business days.</p>
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">Keep hustling,<br><strong style="color: #059669;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">Keep hustling,<br><strong style="color: #059669;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -97,7 +97,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #dc2626, #ef4444); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">❌ Withdrawal Rejected</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -108,7 +108,7 @@ serve(async (req) => {
                 ? `<p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 16px;"><strong>Reason:</strong> ${rejection_reason}</p>`
                 : ""}
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Your funds have been returned to your wallet. You can submit a new withdrawal request at any time.</p>
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions, please contact support.<br><br><strong style="color: #dc2626;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions, please contact support.<br><br><strong style="color: #dc2626;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -130,7 +130,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "I'll Do It <noreply@updates.illdoit.space>",
+        from: "IllDOIT SPACE <noreply@updates.illdoit.space>",
         to: [user.email],
         subject,
         html,

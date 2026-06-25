@@ -42,7 +42,7 @@ serve(async (req) => {
     }
 
     const typeLabel = content_type === "service" ? "Service" : "Job";
-    const subject = `🗑️ Your ${typeLabel.toLowerCase()} "${title}" has been removed — I'll Do It`;
+    const subject = `🗑️ Your ${typeLabel.toLowerCase()} "${title}" has been removed — IllDOIT SPACE`;
 
     const html = `<!DOCTYPE html>
 <html>
@@ -54,7 +54,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">🗑️ Content Removed</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -62,7 +62,7 @@ serve(async (req) => {
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">Hi <strong>${user.display_name || "there"}</strong>,</p>
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">Your ${typeLabel.toLowerCase()} <strong>"${title}"</strong> has been removed from the platform by an admin.</p>
               <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">This typically happens when content violates our community guidelines or terms of service.</p>
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you believe this was a mistake, please contact support.<br><br><strong style="color: #d97706;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you believe this was a mistake, please contact support.<br><br><strong style="color: #d97706;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -84,7 +84,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "I'll Do It <noreply@updates.illdoit.space>",
+        from: "IllDOIT SPACE <noreply@updates.illdoit.space>",
         to: [user.email],
         subject,
         html,

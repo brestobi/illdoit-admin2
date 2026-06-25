@@ -62,7 +62,7 @@ serve(async (req) => {
     const buyerEmail = order.buyer?.email;
     const sellerEmail = order.seller?.email;
 
-    const subject = `⚖️ Dispute resolved — ${action === "refund" ? "Refund issued" : "Funds released"} — I'll Do It`;
+    const subject = `⚖️ Dispute resolved — ${action === "refund" ? "Refund issued" : "Funds released"} — IllDOIT SPACE`;
 
     const html = (name: string, role: string) => `<!DOCTYPE html>
 <html>
@@ -74,7 +74,7 @@ serve(async (req) => {
         <table width="480" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 40px 32px; text-align: center;">
-              <h1 style="color: #ffffff; font-size: 28px; margin: 0;">⚖️ Dispute Resolved</h1>
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></h1>
             </td>
           </tr>
           <tr>
@@ -87,7 +87,7 @@ serve(async (req) => {
               ${resolution_summary
                 ? `<p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0 0 16px;"><strong>Admin notes:</strong> ${resolution_summary}</p>`
                 : ""}
-              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions about this resolution, please contact support.<br><br><strong style="color: #6366f1;">The I'll Do It Team</strong></p>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">If you have questions about this resolution, please contact support.<br><br><strong style="color: #6366f1;">IllDOIT SPACE Team</strong></p>
             </td>
           </tr>
           <tr>
@@ -119,7 +119,7 @@ serve(async (req) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "I'll Do It <noreply@updates.illdoit.space>",
+          from: "IllDOIT SPACE <noreply@updates.illdoit.space>",
           to: [r.email],
           subject,
           html: r.htmlContent,
