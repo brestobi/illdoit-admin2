@@ -16,11 +16,11 @@ Only features listed here if **not yet implemented** in the app.
 
 | # | App-side enforcement | Status | Details |
 |---|---------------------|--------|---------|
-| 1.1 | **Auth gate — block login on suspended/banned** | 🔴 | Check `account_status` after Supabase auth login. If `suspended` or `banned`, show error screen and sign out. |
-| 1.2 | **Auth gate — block session on resume** | 🔴 | On app startup, check `account_status`. If suspended/banned, force logout + show reason. |
-| 1.3 | **API gate — reject requests from suspended/banned users** | 🔴 | Edge Functions / backend should verify `account_status` before processing write operations. |
-| 1.4 | **UI — show suspension banner** | 🔴 | If `account_status = 'suspended'`, show a banner in-app with reason and `suspended_until` date. |
-| 1.5 | **UI — ban screen** | 🔴 | If `account_status = 'banned'`, show permanent ban screen with no recovery. |
+| 1.1 | **Auth gate — block login on suspended/banned** | 🟢 | `_checkSuspension()` in auth provider fetches `account_status` after sign-in, signs out suspended/banned users. |
+| 1.2 | **Auth gate — block session on resume** | 🟢 | Splash screen checks `authState.suspensionMessage` before navigating to home, shows restriction UI. |
+| 1.3 | **API gate — reject requests from suspended/banned users** | 🟢 | Database triggers on 9 tables block INSERT/UPDATE when `account_status != 'active'`. Works for both anon key (RLS) and service_role. |
+| 1.4 | **UI — show suspension banner** | 🟡 | Splash screen shows restriction UI for suspended/banned. In-app banner (while browsing) not yet implemented. |
+| 1.5 | **UI — ban screen** | 🟢 | Splash screen shows permanent ban message with no recovery option. |
 
 ## 2. Identity Verification Status
 
