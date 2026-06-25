@@ -4,6 +4,7 @@ import * as analyticsController from '../controllers/analyticsController';
 import * as userController from '../controllers/userController';
 import * as verificationController from '../controllers/verificationController';
 import * as withdrawalController from '../controllers/withdrawalController';
+import * as disputeController from '../controllers/disputeController';
 
 const router = Router();
 
@@ -19,5 +20,8 @@ router.post('/verifications/:id/status', verificationController.updateVerificati
 
 router.get('/withdrawals', withdrawalController.listPendingWithdrawals);
 router.post('/withdrawals/:id/status', withdrawalController.processWithdrawal);
+
+router.get('/disputes', disputeController.listOpenDisputes);
+router.post('/disputes/:id/resolve', disputeController.resolveDispute);
 
 export default router;
