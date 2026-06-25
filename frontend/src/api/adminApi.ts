@@ -21,23 +21,23 @@ export const adminApi = {
 
   // Users
   getUsers: (q?: string) => api.get(`/users${q ? `?q=${q}` : ''}`).then(r => r.data),
-  updateUserStatus: (id: string, data: { status: string, reason?: string }) => 
-    api.post(`/users/${id}/status`, data).then(res => res.data),
-  deleteService: (id: string) => api.delete(`/moderation/services/${id}`).then(res => res.data),
-  deleteJob: (id: string) => api.delete(`/moderation/jobs/${id}`).then(res => res.data),
-  };
+  updateUserStatus: (id: string, data: { status: string; reason?: string }) =>
+    api.post(`/users/${id}/status`, data).then((res) => res.data),
+
   // Verifications
   getVerifications: () => api.get('/verifications').then(r => r.data),
   updateVerificationStatus: (id: string, data: { status: string; rejectionReason?: string }) =>
     api.post(`/verifications/${id}/status`, data).then(r => r.data),
 
   // Withdrawals
-  getWithdrawals: (status?: string) => api.get(`/withdrawals${status ? `?status=${status}` : ''}`).then(r => r.data),
+  getWithdrawals: (status?: string) =>
+    api.get(`/withdrawals${status ? `?status=${status}` : ''}`).then(r => r.data),
   processWithdrawal: (id: string, data: { status: string; rejectionReason?: string }) =>
     api.post(`/withdrawals/${id}/status`, data).then(r => r.data),
 
   // Disputes
-  getDisputes: (status?: string) => api.get(`/disputes${status ? `?status=${status}` : ''}`).then(r => r.data),
+  getDisputes: (status?: string) =>
+    api.get(`/disputes${status ? `?status=${status}` : ''}`).then(r => r.data),
   resolveDispute: (id: string, data: { resolutionSummary: string; action: 'refund' | 'release' }) =>
     api.post(`/disputes/${id}/resolve`, data).then(r => r.data),
 
@@ -48,7 +48,15 @@ export const adminApi = {
 
   // Transactions
   getTransactions: (type?: string, status?: string) =>
-    api.get(`/transactions${type || status ? `?${type ? `type=${type}` : ''}${type && status ? '&' : ''}${status ? `status=${status}` : ''}` : ''}`).then(r => r.data),
+    api
+      .get(
+        `/transactions${
+          type || status
+            ? `?${type ? `type=${type}` : ''}${type && status ? '&' : ''}${status ? `status=${status}` : ''}`
+            : ''
+        }`,
+      )
+      .then(r => r.data),
   getPayments: () => api.get('/payments').then(r => r.data),
 
   // Content Moderation
