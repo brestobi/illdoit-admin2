@@ -36,13 +36,20 @@ export const getAnalytics = async (req: AdminRequest, res: Response) => {
     const totalBalance = balanceData?.reduce((sum, u) => sum + Number(u.balance || 0), 0) || 0;
     const totalEscrow = balanceData?.reduce((sum, u) => sum + Number(u.escrow_balance || 0), 0) || 0;
 
-    // Transaction volume
-    const { data: volumeData } = await supabaseAdmin
+    // Daily Revenue calculation (last 7 days of completed transactions)
+    const { data: transactions } = await supabaseAdmin
       .from('transactions')
-      .select('amount')
-      .eq('status', 'completed');
+      .select('amount, created_at')
+      .eq('status', 'completed')
+      .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
-    const transactionVolume = volumeData?.reduce((sum, t) => sum + Number(t.amount || 0), 0) || 0;
+    const dailyRevenueMap: Record<string, number> = {};
+    transactions?.forEach(tx => {
+        const date = new Date(tx.created_at).toISOString().split('T')[0];
+        dailyRevenueMap[date] = (dailyRevenueMap[date] || 0) + Number(tx.amount);
+    });
+
+    const dailyRevenue = Object.entries(dailyRevenueMap).map(([date, value]) => ({ date, value }));
 
     res.json({
       totalUsers,
@@ -57,7 +64,7 @@ export const getAnalytics = async (req: AdminRequest, res: Response) => {
       totalJobs,
       totalBalance,
       totalEscrow,
-      transactionVolume,
+      dailyRevenue,
     });
   } catch (error) {
     console.error('Analytics Error:', error);
