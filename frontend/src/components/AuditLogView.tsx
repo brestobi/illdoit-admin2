@@ -16,13 +16,6 @@ const ACTION_LABELS: Record<string, string> = {
   reverse_update_report_status: '↩ Reverse: Report',
 };
 
-const REVERSIBLE_ACTIONS = [
-  'update_user_status',
-  'process_withdrawal_rejected',
-  'update_verification_status',
-  'update_report_status',
-];
-
 const AuditLogView = () => {
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState('');

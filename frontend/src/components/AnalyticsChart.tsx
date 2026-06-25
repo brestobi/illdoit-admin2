@@ -23,7 +23,7 @@ const AnalyticsChart = () => {
             <YAxis stroke="#9CA3AF" tickFormatter={(value) => `R${value}`} />
             <Tooltip 
                 contentStyle={{ backgroundColor: '#1F2937', border: 'none' }} 
-                formatter={(value: number) => [`R${value.toLocaleString()}`, 'Revenue']}
+                formatter={(value: any) => [`R${Number(value).toLocaleString()}`, 'Revenue']}
             />
             <Line type="monotone" dataKey="value" name="Revenue" stroke="#10B981" strokeWidth={2} />
           </LineChart>
