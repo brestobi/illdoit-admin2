@@ -76,7 +76,7 @@ Only features listed here if **not yet implemented** in the app.
 
 | # | App-side enforcement | Status | Details |
 |---|---------------------|--------|---------|
-| 7.1 | **App fetches reference data dynamically** | 🟡 | If hardcoded in app, needs to switch to API fetch. Check Flutter code. |
+| 7.1 | **App fetches reference data dynamically** | 🟢 | All categories, skills, and locations fetched from `categories`, `skills`, `locations` tables via Supabase queries. No hardcoded lists. |
 
 ---
 
@@ -84,4 +84,5 @@ Only features listed here if **not yet implemented** in the app.
 
 1. **🔴 5.1** — Auto-suspend on X reports
 2. **🔴 5.2** — Notify reporter of report outcome
-3. **🔴 7.1** — Switch from hardcoded to API-fetched reference data
+
+All other 11 items are 🟢 implemented.
