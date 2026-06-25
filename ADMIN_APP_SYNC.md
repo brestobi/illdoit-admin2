@@ -29,7 +29,7 @@ Only features listed here if **not yet implemented** in the app.
 | # | App-side enforcement | Status | Details |
 |---|---------------------|--------|---------|
 | 2.1 | **Restrict posting jobs/services until verified** | 🟢 | DB trigger blocks INSERT/UPDATE on `services` and `jobs` when `verification_status != 'verified'`. |
-| 2.2 | **Show verification badge** | 🔴 | Display verified badge on user profiles when `is_verified = true`. |
+| 2.2 | **Show verification badge** | 🟢 | Display verified badge on user profiles when `is_verified = true`. |
 | 2.3 | **Block withdrawal until verified** | 🟢 | DB trigger blocks INSERT/UPDATE on `withdrawal_requests` when `verification_status != 'verified'`. |
 
 ## 3. Withdrawal Processing
