@@ -60,4 +60,10 @@ export const adminApi = {
   addConfigEntry: (table: string, data: any) => api.post(`/config/${table}`, data).then(r => r.data),
   updateConfigEntry: (table: string, id: string, data: any) =>
     api.put(`/config/${table}/${id}`, data).then(r => r.data),
+
+  // Audit Logs
+  getAuditLogs: (params?: { action?: string; adminId?: string; targetTable?: string; page?: string }) =>
+    api.get('/audit/logs', { params }).then(r => r.data),
+  getAuditLogDetail: (id: string) => api.get(`/audit/logs/${id}`).then(r => r.data),
+  reverseAction: (id: string) => api.post(`/audit/logs/${id}/reverse`).then(r => r.data),
 };

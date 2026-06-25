@@ -44,8 +44,10 @@ export const getAnalytics = async (req: AdminRequest, res: Response) => {
       .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
     const dailyRevenueMap: Record<string, number> = {};
-    transactions?.forEach(tx => {
-        const date = new Date(tx.created_at).toISOString().split('T')[0];
+    transactions?.forEach((tx: any) => {
+        const date: string = tx.created_at
+            ? (new Date(tx.created_at).toISOString().split('T')[0] ?? 'unknown')
+            : 'unknown';
         dailyRevenueMap[date] = (dailyRevenueMap[date] || 0) + Number(tx.amount);
     });
 

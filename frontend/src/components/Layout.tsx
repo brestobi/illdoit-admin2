@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, ShieldCheck, Banknote, Scale, Flag, CreditCard, ClipboardList, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, ShieldCheck, Banknote, Scale, Flag, CreditCard, ClipboardList, Settings, History, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from '../api/supabase';
 
 const NavItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: React.ElementType }) => {
@@ -79,6 +79,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </p>
           <NavItem to="/admin/content" label="Content" icon={ClipboardList} />
           <NavItem to="/admin/config" label="Config" icon={Settings} />
+          <div className="border-t border-gray-700 my-2" />
+          <p className={`text-xs text-gray-500 uppercase tracking-wider px-3 py-1 ${!sidebarOpen && 'hidden'}`}>
+            History
+          </p>
+          <NavItem to="/admin/audit" label="Audit Logs" icon={History} />
         </nav>
 
         {/* Sign Out */}

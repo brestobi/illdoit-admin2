@@ -12,6 +12,7 @@ import ReportsView from './components/ReportsView';
 import TransactionsView from './components/TransactionsView';
 import ContentView from './components/ContentView';
 import ConfigView from './components/ConfigView';
+import AuditLogView from './components/AuditLogView';
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,14 @@ const App = () => {
             element={
               <AdminRoute>
                 <ConfigView />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/audit"
+            element={
+              <AdminRoute>
+                <AuditLogView />
               </AdminRoute>
             }
           />

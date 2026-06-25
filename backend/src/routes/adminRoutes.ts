@@ -9,6 +9,7 @@ import * as reportController from '../controllers/reportController';
 import * as transactionController from '../controllers/transactionController';
 import * as moderationController from '../controllers/moderationController';
 import * as configController from '../controllers/configController';
+import * as auditController from '../controllers/auditController';
 
 const router = Router();
 
@@ -42,5 +43,9 @@ router.delete('/moderation/jobs/:id', moderationController.deleteJob);
 router.get('/config/:table', configController.listTable);
 router.post('/config/:table', configController.addTableEntry);
 router.put('/config/:table/:id', configController.updateTableEntry);
+
+router.get('/audit/logs', auditController.listLogs);
+router.get('/audit/logs/:id', auditController.getLogDetail);
+router.post('/audit/logs/:id/reverse', auditController.reverseAction);
 
 export default router;
