@@ -68,7 +68,7 @@ Only features listed here if **not yet implemented** in the app.
 | # | App-side enforcement | Status | Details |
 |---|---------------------|--------|---------|
 | 6.1 | **Remove deleted content from feeds** | 🟢 | Direct DB delete removes from queries. |
-| 6.2 | **Notify content owner** | 🔴 | When admin deletes a service/job, notify the owner with reason. |
+| 6.2 | **Notify content owner** | 🟢 | When admin deletes a service/job, notify the owner with reason. |
 
 ## 7. Reference Data Changes
 
