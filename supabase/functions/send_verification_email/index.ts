@@ -134,7 +134,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "I'll Do It <noreply@illdoit.com>",
+        from: "I'll Do It <noreply@updates.illdoit.space>",
         to: [user.email],
         subject,
         html,
