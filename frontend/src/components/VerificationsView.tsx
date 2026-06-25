@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '../api/supabase';
 import { adminApi } from '../api/adminApi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const VerificationsView = () => {
   const [filter, setFilter] = useState('pending');
@@ -40,15 +41,90 @@ const VerificationsView = () => {
     };
   };
 
-  // Build a signed URL for private bucket images
-  const getImageUrl = (url: string) => {
-    if (!url) return null;
-    // If it's already a full Supabase URL, use it directly
-    if (url.startsWith('http')) return url;
-    // Otherwise it's a storage path — construct the public URL
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    return `${supabaseUrl}/storage/v1/object/public/verification-docs/${url}`;
-  };
+// Extract storage path from a Supabase URL
+const getStoragePath = (url: string) => {
+  if (!url) return null;
+  // Handle full URLs: https://<project>.supabase.co/storage/v1/object/public/verification-docs/<path>
+  const match = url.match(/\/verification-docs\/(.+)/);
+  if (match) return match[1];
+  // Already a path
+  return url;
+};
+
+// Component that loads a signed URL and displays the image
+const SignedDocImage = ({ url, alt, className, onClick }: { url: string; alt: string; className?: string; onClick?: () => void }) => {
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const path = getStoragePath(url);
+    if (!path) { setError(true); return; }
+
+    supabase.storage
+      .from('verification-docs')
+      .createSignedUrl(path, 3600)
+      .then(({ data, error: err }) => {
+        if (err || !data) { setError(true); return; }
+        setSignedUrl(data.signedUrl);
+      })
+      .catch(() => setError(true));
+  }, [url]);
+
+  if (error || !signedUrl) {
+    return (
+      <div className={`aspect-[3/4] bg-gray-900 rounded-lg border border-gray-600 flex items-center justify-center ${className || ''}`} onClick={onClick}>
+        <svg className="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`aspect-[3/4] bg-gray-900 rounded-lg overflow-hidden border border-gray-600 cursor-pointer group ${className || ''}`} onClick={onClick}>
+      <img src={signedUrl} alt={alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+    </div>
+  );
+};
+
+const LightboxImage = ({ url, onClose }: { url: string; onClose: () => void }) => {
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const path = getStoragePath(url);
+    if (!path) { setError(true); return; }
+    supabase.storage
+      .from('verification-docs')
+      .createSignedUrl(path, 3600)
+      .then(({ data, error: err }) => {
+        if (err || !data) { setError(true); return; }
+        setSignedUrl(data.signedUrl);
+      })
+      .catch(() => setError(true));
+  }, [url]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out" onClick={onClose}>
+      <div className="max-w-3xl max-h-[90vh] mx-4" onClick={(e) => e.stopPropagation()}>
+        {error || !signedUrl ? (
+          <div className="w-64 h-80 bg-gray-900 rounded-lg border border-gray-700 flex items-center justify-center">
+            <svg className="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
+          </div>
+        ) : (
+          <img src={signedUrl} alt="Document preview" className="max-w-full max-h-[85vh] rounded-lg shadow-2xl" />
+        )}
+        <div className="flex justify-center mt-3 gap-4">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
   return (
     <div>
@@ -131,49 +207,13 @@ const VerificationsView = () => {
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Verification Documents</p>
                     <div className="grid grid-cols-3 gap-4">
                       {docs.idFront && (
-                        <div className="cursor-pointer group" onClick={() => setSelectedImage(docs.idFront)}>
-                          <div className="aspect-[3/4] bg-gray-900 rounded-lg overflow-hidden border border-gray-600">
-                            <img
-                              src={getImageUrl(docs.idFront)!}
-                              alt="ID Front"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>';
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1 text-center">ID Front</p>
-                        </div>
+                        <SignedDocImage url={docs.idFront} alt="ID Front" onClick={() => setSelectedImage(docs.idFront)} />
                       )}
                       {docs.idBack && (
-                        <div className="cursor-pointer group" onClick={() => setSelectedImage(docs.idBack)}>
-                          <div className="aspect-[3/4] bg-gray-900 rounded-lg overflow-hidden border border-gray-600">
-                            <img
-                              src={getImageUrl(docs.idBack)!}
-                              alt="ID Back"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>';
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1 text-center">ID Back</p>
-                        </div>
+                        <SignedDocImage url={docs.idBack} alt="ID Back" onClick={() => setSelectedImage(docs.idBack)} />
                       )}
                       {docs.selfie && (
-                        <div className="cursor-pointer group" onClick={() => setSelectedImage(docs.selfie)}>
-                          <div className="aspect-[3/4] bg-gray-900 rounded-lg overflow-hidden border border-gray-600">
-                            <img
-                              src={getImageUrl(docs.selfie)!}
-                              alt="Selfie"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1 text-center">Selfie</p>
-                        </div>
+                        <SignedDocImage url={docs.selfie} alt="Selfie" onClick={() => setSelectedImage(docs.selfie)} />
                       )}
                     </div>
                   </div>
@@ -211,29 +251,7 @@ const VerificationsView = () => {
 
       {/* Image Lightbox */}
       {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="max-w-3xl max-h-[90vh] mx-4" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={getImageUrl(selectedImage)!}
-              alt="Document preview"
-              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
-              }}
-            />
-            <div className="flex justify-center mt-3 gap-4">
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+        <LightboxImage url={selectedImage} onClose={() => setSelectedImage(null)} />
       )}
 
       {/* Approve/Reject Modal */}
