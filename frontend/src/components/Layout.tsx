@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Users, ShieldCheck, Banknote, Scale, Flag, CreditCard, ClipboardList, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from '../api/supabase';
 
-const NavItem = ({ to, label, icon }: { to: string; label: string; icon: string }) => {
+const NavItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: React.ElementType }) => {
   const location = useLocation();
   const active = location.pathname === to || (to !== '/admin' && location.pathname.startsWith(to));
 
@@ -16,7 +17,7 @@ const NavItem = ({ to, label, icon }: { to: string; label: string; icon: string 
             : 'text-gray-300 hover:bg-gray-700 hover:text-white'
         }`}
       >
-        <span className="text-lg">{icon}</span>
+        <Icon size={20} />
         {label}
       </Link>
     </li>
@@ -51,33 +52,33 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-gray-400 hover:text-white p-1 rounded"
           >
-            {sidebarOpen ? '◀' : '▶'}
+            {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </button>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          <NavItem to="/admin" label="Dashboard" icon="📊" />
+          <NavItem to="/admin" label="Dashboard" icon={LayoutDashboard} />
           <div className="border-t border-gray-700 my-2" />
           <p className={`text-xs text-gray-500 uppercase tracking-wider px-3 py-1 ${!sidebarOpen && 'hidden'}`}>
             Management
           </p>
-          <NavItem to="/admin/users" label="Users" icon="👥" />
-          <NavItem to="/admin/verifications" label="Verifications" icon="✅" />
-          <NavItem to="/admin/withdrawals" label="Withdrawals" icon="💰" />
-          <NavItem to="/admin/disputes" label="Disputes" icon="⚖️" />
-          <NavItem to="/admin/reports" label="Reports" icon="🚩" />
+          <NavItem to="/admin/users" label="Users" icon={Users} />
+          <NavItem to="/admin/verifications" label="Verifications" icon={ShieldCheck} />
+          <NavItem to="/admin/withdrawals" label="Withdrawals" icon={Banknote} />
+          <NavItem to="/admin/disputes" label="Disputes" icon={Scale} />
+          <NavItem to="/admin/reports" label="Reports" icon={Flag} />
           <div className="border-t border-gray-700 my-2" />
           <p className={`text-xs text-gray-500 uppercase tracking-wider px-3 py-1 ${!sidebarOpen && 'hidden'}`}>
             Finance
           </p>
-          <NavItem to="/admin/transactions" label="Transactions" icon="💳" />
+          <NavItem to="/admin/transactions" label="Transactions" icon={CreditCard} />
           <div className="border-t border-gray-700 my-2" />
           <p className={`text-xs text-gray-500 uppercase tracking-wider px-3 py-1 ${!sidebarOpen && 'hidden'}`}>
             Content
           </p>
-          <NavItem to="/admin/content" label="Content" icon="📋" />
-          <NavItem to="/admin/config" label="Config" icon="⚙️" />
+          <NavItem to="/admin/content" label="Content" icon={ClipboardList} />
+          <NavItem to="/admin/config" label="Config" icon={Settings} />
         </nav>
 
         {/* Sign Out */}
@@ -86,7 +87,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg w-full transition-colors"
           >
-            <span className="text-lg">🚪</span>
+            <LogOut size={20} />
             {sidebarOpen && 'Sign Out'}
           </button>
         </div>

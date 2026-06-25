@@ -40,7 +40,7 @@ Only features listed here if **not yet implemented** in the app.
 |---|---------------------|--------|---------|
 | 3.1 | **Approve → release funds** | 🟢 | DB trigger handles balance update when transaction status changes to `completed`. |
 | 3.2 | **Reject → return funds** | 🟢 | DB trigger returns funds to user balance when transaction changes to `cancelled`. |
-| 3.3 | **Notify user of withdrawal result** | 🔴 | Admin action should trigger a push notification or in-app notification. |
+| 3.3 | **Notify user of withdrawal result** | 🟢 | Admin action should trigger a push notification or in-app notification. |
 
 ## 4. Dispute Resolution
 
