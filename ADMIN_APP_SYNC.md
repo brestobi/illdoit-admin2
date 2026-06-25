@@ -80,11 +80,8 @@ Only features listed here if **not yet implemented** in the app.
 
 ---
 
-## Priority Order for App-Side Work
+## Priority Order for Remaining Work
 
-1. **🔴 2.2** — Show verified badge on user profiles (small UI change)
-2. **🔴 3.3** — Notifications for admin withdrawal/dispute actions
-3. **🔴 6.2** — Notify content owner when admin deletes their post
-4. **🔴 5.1** — Auto-suspend on X reports
-5. **🔴 5.2** — Notify reporter of report outcome
-6. **🔴 7.1** — Switch from hardcoded to API-fetched reference data
+1. **🔴 5.1** — Auto-suspend on X reports
+2. **🔴 5.2** — Notify reporter of report outcome
+3. **🔴 7.1** — Switch from hardcoded to API-fetched reference data
