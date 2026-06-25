@@ -28,9 +28,9 @@ Only features listed here if **not yet implemented** in the app.
 
 | # | App-side enforcement | Status | Details |
 |---|---------------------|--------|---------|
-| 2.1 | **Restrict posting jobs/services until verified** | 🔴 | Users with `verification_status != 'verified'` should not be able to post jobs or services. |
+| 2.1 | **Restrict posting jobs/services until verified** | 🟢 | DB trigger blocks INSERT/UPDATE on `services` and `jobs` when `verification_status != 'verified'`. |
 | 2.2 | **Show verification badge** | 🔴 | Display verified badge on user profiles when `is_verified = true`. |
-| 2.3 | **Block withdrawal until verified** | 🔴 | Users cannot request withdrawals unless `is_verified = true`. |
+| 2.3 | **Block withdrawal until verified** | 🟢 | DB trigger blocks INSERT/UPDATE on `withdrawal_requests` when `verification_status != 'verified'`. |
 
 ## 3. Withdrawal Processing
 
@@ -82,9 +82,9 @@ Only features listed here if **not yet implemented** in the app.
 
 ## Priority Order for App-Side Work
 
-1. **🔴 1.1 + 1.2** — Auth gate: block suspended/banned users from using the app (highest impact)
-2. **🔴 1.3** — API gate: reject write operations from suspended accounts
-3. **🔴 2.1** — Require verification to post jobs/services
-4. **🔴 2.3** — Require verification for withdrawals
-5. **🔴 3.3 + 4.3 + 6.2** — Notifications for admin actions
-6. **🔴 1.4 + 1.5** — In-app UI for suspension/ban states
+1. **🔴 2.2** — Show verified badge on user profiles (small UI change)
+2. **🔴 3.3** — Notifications for admin withdrawal/dispute actions
+3. **🔴 6.2** — Notify content owner when admin deletes their post
+4. **🔴 5.1** — Auto-suspend on X reports
+5. **🔴 5.2** — Notify reporter of report outcome
+6. **🔴 7.1** — Switch from hardcoded to API-fetched reference data
