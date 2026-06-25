@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../api/adminApi';
 import { useState } from 'react';
-import { supabase } from '../api/supabase';
 
 const VerificationsView = () => {
   const [filter, setFilter] = useState('pending');
