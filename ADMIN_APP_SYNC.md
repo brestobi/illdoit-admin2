@@ -50,7 +50,7 @@ Only features listed here if **not yet implemented** in the app.
 |---|---------------------|--------|---------|
 | 4.1 | **Refund → return escrow to buyer** | 🟢 | DB trigger handles escrow release on transaction status change. |
 | 4.2 | **Release → pay seller** | 🟢 | DB trigger completes escrow to seller. |
-| 4.3 | **Notify both parties** | 🔴 | Admin resolution should trigger notifications to buyer + seller. |
+| 4.3 | **Notify both parties** | 🟢 | Admin resolution should trigger notifications to buyer + seller. |
 
 ## 5. User Reports
 
