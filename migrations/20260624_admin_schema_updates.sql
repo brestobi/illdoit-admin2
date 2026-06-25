@@ -56,32 +56,64 @@ END $$;
 ALTER TABLE public.user_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
 
--- 6. Admin Write Policies
+-- 6. Admin Write Policies (idempotent — safe to re-run)
 -- Note: is_admin() function is assumed to exist as per requirements
 
-CREATE POLICY "Admin manage withdrawals" ON public.withdrawal_requests 
-  FOR ALL USING (public.is_admin());
+CREATE OR REPLACE FUNCTION public.create_policy_if_not_exists(
+  policy_name TEXT, table_name TEXT, policy_def TEXT
+) RETURNS void AS $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE policyname = policy_name AND tablename = table_name
+  ) THEN
+    EXECUTE policy_def;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE POLICY "Admin manage disputes" ON public.disputes 
-  FOR ALL USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin manage withdrawals', 'withdrawal_requests',
+  'CREATE POLICY "Admin manage withdrawals" ON public.withdrawal_requests FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin manage user_reports" ON public.user_reports 
-  FOR ALL USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin manage disputes', 'disputes',
+  'CREATE POLICY "Admin manage disputes" ON public.disputes FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin read messages" ON public.messages 
-  FOR SELECT USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin manage user_reports', 'user_reports',
+  'CREATE POLICY "Admin manage user_reports" ON public.user_reports FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin manage reviews" ON public.reviews 
-  FOR ALL USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin read messages', 'messages',
+  'CREATE POLICY "Admin read messages" ON public.messages FOR SELECT USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin manage notifications" ON public.notifications 
-  FOR ALL USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin manage reviews', 'reviews',
+  'CREATE POLICY "Admin manage reviews" ON public.reviews FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin manage payments" ON public.payments 
-  FOR ALL USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Admin manage notifications', 'notifications',
+  'CREATE POLICY "Admin manage notifications" ON public.notifications FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Users can create reports" ON user_reports 
-  FOR INSERT WITH CHECK (auth.uid() = reporter_id);
+SELECT public.create_policy_if_not_exists(
+  'Admin manage payments', 'payments',
+  'CREATE POLICY "Admin manage payments" ON public.payments FOR ALL USING (public.is_admin())'
+);
 
-CREATE POLICY "Admin read audit logs" ON public.admin_audit_logs
-  FOR SELECT USING (public.is_admin());
+SELECT public.create_policy_if_not_exists(
+  'Users can create reports', 'user_reports',
+  'CREATE POLICY "Users can create reports" ON user_reports FOR INSERT WITH CHECK (auth.uid() = reporter_id)'
+);
+
+SELECT public.create_policy_if_not_exists(
+  'Admin read audit logs', 'admin_audit_logs',
+  'CREATE POLICY "Admin read audit logs" ON public.admin_audit_logs FOR SELECT USING (public.is_admin())'
+);
+
+DROP FUNCTION IF EXISTS public.create_policy_if_not_exists;
