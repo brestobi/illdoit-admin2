@@ -1,5 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import UsersView from './components/UsersView';
+
+const queryClient = new QueryClient();
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex h-screen bg-gray-100">
@@ -21,15 +25,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/admin" element={<h2>Dashboard Overview</h2>} />
-          <Route path="/admin/users" element={<h2>Users Management</h2>} />
-          <Route path="/admin/verifications" element={<h2>Verifications</h2>} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/admin" element={<h2>Dashboard Overview</h2>} />
+            <Route path="/admin/users" element={<UsersView />} />
+            <Route path="/admin/verifications" element={<h2>Verifications</h2>} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
