@@ -21,7 +21,7 @@ export const listPendingReports = async (req: AdminRequest, res: Response) => {
 
 export const updateReportStatus = async (req: AdminRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { status, adminNotes } = req.body; // reviewed | dismissed
 
     const { error } = await supabaseAdmin

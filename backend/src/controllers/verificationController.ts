@@ -21,7 +21,7 @@ export const listPendingVerifications = async (req: AdminRequest, res: Response)
 
 export const updateVerificationStatus = async (req: AdminRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { status, rejectionReason } = req.body; // verified | rejected
 
     const updateData: any = { verification_status: status };

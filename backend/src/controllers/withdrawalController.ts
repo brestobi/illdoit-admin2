@@ -5,11 +5,18 @@ import { logAdminAction } from '../utils/auditLogger';
 
 export const listPendingWithdrawals = async (req: AdminRequest, res: Response) => {
   try {
-    const { data, error } = await supabaseAdmin
+    const { status: filterStatus } = req.query;
+    let query = supabaseAdmin
       .from('withdrawal_requests')
-      .select('*, users(display_name, email)')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: true });
+      .select('*, users(display_name, email)');
+
+    if (filterStatus && filterStatus !== 'all') {
+      query = query.eq('status', filterStatus as string);
+    } else {
+      query = query.in('status', ['pending', 'processed', 'rejected']);
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) throw error;
     res.json(data);
@@ -21,31 +28,52 @@ export const listPendingWithdrawals = async (req: AdminRequest, res: Response) =
 
 export const processWithdrawal = async (req: AdminRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { status, rejectionReason } = req.body; // processed | rejected
 
-    // 1. Update request status
+    // 1. Get the withdrawal request with user info for transaction lookup
+    const { data: withdrawal, error: fetchError } = await supabaseAdmin
+      .from('withdrawal_requests')
+      .select('*, users!inner(display_name, email)')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !withdrawal) {
+      return res.status(404).json({ error: 'Withdrawal request not found' });
+    }
+
+    // 2. Update request status
     const { error: updateError } = await supabaseAdmin
       .from('withdrawal_requests')
-      .update({ 
+      .update({
         status: status,
-        rejection_reason: rejectionReason
+        rejection_reason: rejectionReason || null,
       })
       .eq('id', id);
 
     if (updateError) throw updateError;
 
-    // 2. Logic for updating associated transaction
-    // Note: The actual balance update happens via trigger in DB.
-    // Admin just marks the withdrawal request as processed/rejected.
-    
+    // 3. Sync the associated transaction
+    const transactionStatus = status === 'processed' ? 'completed' : 'cancelled';
+    const { error: txnError } = await supabaseAdmin
+      .from('transactions')
+      .update({ status: transactionStatus })
+      .eq('type', 'withdrawal')
+      .eq('sender_id', withdrawal.user_id)
+      .eq('status', 'pending');
+
+    if (txnError) {
+      console.error('Failed to sync transaction status:', txnError);
+    }
+
+    // 4. Audit log
     await logAdminAction(
-        req.adminUser.id,
-        `process_withdrawal_${status}`,
-        'withdrawal_requests',
-        id,
-        { status: 'pending' },
-        { status, rejectionReason }
+      req.adminUser.id,
+      `process_withdrawal_${status}`,
+      'withdrawal_requests',
+      id,
+      { status: 'pending' },
+      { status, rejectionReason }
     );
 
     res.json({ message: `Withdrawal ${status} successfully` });
